@@ -16,8 +16,8 @@ main = do
     printf      <- extern "printf"
 
     runX86 [hasm|
-        push hello_world
-        call printf
+        push ${hello_world}
+        call ${printf}
         xor %eax, %eax
         ret
     |]
