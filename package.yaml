@@ -19,7 +19,7 @@ description:         Please see the README on GitHub at <https://github.com/mesa
 
 dependencies:
 - base >= 4.7 && < 5
-- attoparsec
+- megaparsec
 - template-haskell
 - vector
 - binary
@@ -27,6 +27,12 @@ dependencies:
 library:
   source-dirs: src
 
+tests:
+  registers:
+    main:        Register.hs
+    source-dirs: test
+    dependencies:
+    - hasm
 # tests:
 #   hasm-test:
 #     main:                Spec.hs
