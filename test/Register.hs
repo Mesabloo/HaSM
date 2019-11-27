@@ -10,4 +10,9 @@ main = do
             mov $0, %eax ;
             ret ;;;;; ret
             label: nop |]
+    let a = [hasm| 
+            label: # test comment
+                   /* test multiline
+                   comment */
+                ret |]
     pure ()
