@@ -43,7 +43,9 @@ float :: Parser Double
 float = P.signed spaceConsumer P.float
 
 identifier :: Parser String
-identifier = (:) <$> P.lowerChar <*> P.many (P.alphaNumChar P.<|> P.oneOf "._'@")
+identifier = (:) <$> P.lowerChar <*> P.many (P.alphaNumChar P.<|> P.oneOf "._'@") >>= check
+  where check x | x `elem` (instructions <> registers) = fail "An identifier cannot be a reserved word"
+                | otherwise = pure x
 
 parens :: Parser a -> Parser a
 parens = P.between (symbol "(") (symbol ")")
