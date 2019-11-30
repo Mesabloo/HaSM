@@ -37,7 +37,9 @@ symbol :: String -> Parser ()
 symbol = (() <$) . P.symbol spaceConsumer
 
 integer :: Parser Integer
-integer = P.signed spaceConsumer P.decimal
+integer = P.signed spaceConsumer (hex P.<|> bin P.<|> P.decimal)
+  where hex = (P.string "0x" P.<|> P.string "0X") *> P.hexadecimal
+        bin = (P.string "0b" P.<|> P.string "0B") *> P.binary
 
 float :: Parser Double
 float = P.signed spaceConsumer P.float
