@@ -1,19 +1,20 @@
 module Language.HaSM.TH where
 
 import Language.Haskell.TH.Quote (QuasiQuoter(..))
-import Language.Haskell.TH (Q, Exp(..), runIO)
+import Language.Haskell.TH (Q, Exp(..), runIO, Lit(..))
 import Language.HaSM.Syntax (parse, Instruction)
 import Text.Megaparsec (ParseErrorBundle, errorBundlePretty)
 import Data.Void (Void)
+import Language.HaSM.CodeGen (Arch, generate)
 
-hasm :: QuasiQuoter
-hasm = QuasiQuoter
-    (translate . parse "hasm")
+hasm :: Arch -> QuasiQuoter
+hasm arch = QuasiQuoter
+    (translate arch . parse "hasm")
     (notHandled "pattern")
     (notHandled "type")
     (notHandled "top-level binding")
   where notHandled t = error ("The hasm quasiquoter cannot be used as a " <> t)
 
-translate :: Either (ParseErrorBundle String Void) [Instruction] -> Q Exp
-translate (Left err) = fail (errorBundlePretty err)
-translate (Right x)  = ListE [] <$ runIO (putStrLn ("Generated AST from hasm quote: " <> show x))
+translate :: Arch -> Either (ParseErrorBundle String Void) [Instruction] -> Q Exp
+translate _ (Left err) = fail (errorBundlePretty err)
+translate a (Right x)  = pure (ListE $ LitE . IntegerL . fromIntegral <$> generate a x)
