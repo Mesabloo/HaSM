@@ -25,10 +25,10 @@ space1 = P.skipSome (P.satisfy isSpace)
             in code == 9 || code == 32 || code == 160 || code == 8200 || code == 8201 || code == 8202
 
 lineCmnt :: Parser ()
-lineCmnt = P.skipLineComment "#"
+lineCmnt = P.skipLineComment "--"
 
 blockCmnt :: Parser ()
-blockCmnt = P.skipBlockComment "/*" "*/"
+blockCmnt = P.skipBlockComment "{-" "-}"
 
 reserved :: String -> Parser ()
 reserved k = () <$ lexeme (P.string k <* P.notFollowedBy P.alphaNumChar)
