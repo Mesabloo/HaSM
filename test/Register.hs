@@ -1,23 +1,22 @@
 {-# LANGUAGE QuasiQuotes #-}
 
 import Language.HaSM (hasm_x86)
+import Data.Word (Word8)
+import Numeric (showHex)
 
 main :: IO ()
 main = do
-    let y = 0x10
-    let x = [hasm_x86| mov $0, %eax ; ret |]
-    let z = [hasm_x86|
-            mov $0x0, -0x0 ;
-            ret ;;;;; ret
-            label: nop |]
-    let a = [hasm_x86|
-            label: # test comment
-                   /* test multiline
-                   comment */
-                ret |]
+    let x = [hasm_x86| |]
+    let y = [hasm_x86|
+        mov $5, %eax
+        -- add $, %eax
+        ret
+        |]
 
-    print x
-    print z
-    print a
+    dump x
+    dump y
 
     pure ()
+
+dump :: [Word8] -> IO ()
+dump = print . fmap (("0x" <>) . (`showHex` ""))
