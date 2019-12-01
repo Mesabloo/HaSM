@@ -1,9 +1,10 @@
-module Language.HaSM.CodeGen.Generators.X86 where
+module Language.HaSM.CodeGen.Generators.X86
+( generate ) where
 
+import Language.HaSM.CodeGen.Generators.X86.Converter
+import Language.HaSM.CodeGen.Generators.X86.Generator
+import Language.HaSM.Syntax
 import Data.Word (Word8)
-import Language.HaSM.Syntax (Instruction(..))
 
 generate :: [Instruction] -> [Word8]
-generate [] = [0x90]
-generate (i:is) = [] <> generate is
-
+generate = convert . generate'

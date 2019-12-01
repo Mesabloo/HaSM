@@ -25,6 +25,8 @@ dependencies:
 - binary
 - mtl
 - containers
+- bytestring
+- lens
 
 library:
   source-dirs: src
