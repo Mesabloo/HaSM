@@ -51,6 +51,17 @@ generator (Nop : is) = do
 generator (Ret : is) = do
     emit [Byte 0xC3]
     generator is
+generator (Add (Imm i) (Reg EAX) : is) = do
+    emit [Byte 0x05]
+    immediate i
+    generator is
+generator (Add (Imm i) (Reg dst) : is) = do
+    emit [Byte 0x81, Byte $ modRM .|. index dst]
+    immediate i
+    generator is
+generator (Add (Reg src) (Reg dst) : is) = do
+    emit [Byte 0x01, Byte $ modRM .|. index src `shiftL` 3 .|. index dst]
+    generator is 
 generator (i : is) = error ("No translation found for \"" <> show i <> "\"")
 
 immediate :: Immediate -> Generator ()
