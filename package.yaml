@@ -18,7 +18,7 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/mesabloo/hasm#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+- base
 - megaparsec
 - template-haskell
 - vector
@@ -27,6 +27,7 @@ dependencies:
 - containers
 - bytestring
 - lens
+- unix
 
 library:
   source-dirs: src
