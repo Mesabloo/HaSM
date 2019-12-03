@@ -10,6 +10,7 @@ import Language.HaSM.Syntax.Rules.Instructions.Mov
 import Language.HaSM.Syntax.Rules.Instructions.Ret
 import Language.HaSM.Syntax.Rules.Instructions.Nop
 import Language.HaSM.Syntax.Rules.Instructions.Label
+import Language.HaSM.Syntax.Rules.Instructions.Add
 
 program :: Parser [Instruction]
 program = init *> body <* eof
@@ -23,4 +24,5 @@ statement :: Parser Instruction
 statement = choice
     [ mov <?> "MOV instruction"
     , ret <?> "RET instruction"
-    , nop <?> "NOP instruction" ] <?> ""
+    , nop <?> "NOP instruction"
+    , add <?> "ADD instruction" ] <?> ""

@@ -1,6 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes
-           , DataKinds #-}
-
 module Language.HaSM.Syntax.Rules.Instructions.Mov where
 
 import Language.HaSM.Syntax.AST
