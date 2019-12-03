@@ -6,7 +6,7 @@ It aims at being quite cross-platform.
 ### Code example
 
 ```haskell
-{-# LANGUAGE TemplateHaskell, QuasiQuotes, BlockArguments #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 import Language.HaSM
 
@@ -15,10 +15,10 @@ main = do
     hello_world <- asciz "Hello, world!"
     printf      <- extern "printf"
 
-    runX86 [hasm|
+    run [hasm_x86|
         push ${hello_world}
         call ${printf}
         xor %eax, %eax
         ret
     |]
-```
+```   
