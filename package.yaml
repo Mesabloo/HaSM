@@ -27,7 +27,21 @@ dependencies:
 - containers
 - bytestring
 - lens
-- unix
+
+when:
+- condition: os(windows)
+  then:
+    dependencies:
+    - Win32
+
+    include-dirs:
+    - src/System/MMap
+
+    c-sources:
+    - src/System/Mmap/*.c
+  else:
+    dependencies:
+    - unix
 
 library:
   source-dirs: src

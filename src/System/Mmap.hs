@@ -1,22 +1,31 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface #-}
 
 module System.Mmap
 ( mmap, munmap
 , module System.Mmap.Flags
 , module System.Mmap.Exception ) where
 
-import System.Mmap.Exception
-import System.Mmap.Flags
-import Control.Exception (throwIO)
-import Foreign.C.Types
 import Foreign.Ptr
-import System.Posix.Types
-import Data.Word (Word8)
+import Foreign.C.Types
+import System.Mmap.Flags
+import System.Mmap.Exception
+import Control.Exception (throwIO)
 import Control.Monad (when)
+import Data.Word
+import System.Posix.Types
 
+#ifndef mingw32_HOST_OS
 foreign import ccall unsafe "sys/mman.h mmap"
+#else
+foreign import ccall unsafe "./MMap/windows-mmap.h mmap"
+#endif
     c_mmap :: Ptr () -> CSize -> ProtOption -> MmapOption -> Fd -> COff -> IO (Ptr a)
+
+#ifndef mingw32_HOST_OS
 foreign import ccall unsafe "sys/mman.h munmap"
+#else
+foreign import ccall unsafe "./MMap/windows-mmap.h munmap"
+#endif
     c_munmap :: Ptr a -> CSize -> IO Int
 
 -- | The 'mmap' function is used to allocate pages.

@@ -1,11 +1,11 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module System.Mmap.Flags
-( protExec, protRead, protWrite, protNone
-, mmapNone, mmapAnon, mmapPrivate
-, ProtOption(..), MmapOption(..) ) where
+( ProtOption(..), MmapOption(..)
+, protExec, protRead, protWrite
+, mmapAnon, mmapPrivate, mmapNone ) where
 
-import Data.Bits
+import Data.Bits (Bits, (.|.))
 import Foreign.C.Types (CInt)
 
 -- | The flags used in the module
