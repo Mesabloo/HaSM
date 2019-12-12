@@ -4,6 +4,7 @@ import Data.Word (Word8)
 
 data Core
     = Byte Word8
-    | Label String
-    | Jmp String    -- ^ Only used with labels
-    | Call String   -- ^ Only used with labels
+    | Label String Integer
+    | JmpL String    -- ^ Only used with labels
+    | JmpRel Integer -- ^ Used for relative jumping
+    | Call String    -- ^ Only used with labels

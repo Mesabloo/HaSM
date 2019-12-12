@@ -15,15 +15,26 @@ mov %ebx, %eax
 ret
 
         |]
+    let z = [hasm_x86|
+
+mov $0, %ebx
+loop:
+    add $1, %ebx
+    jmp loop
+
+        |]
 
     dump x
     dump y
+    dump z
 
-    res <- run x
+    res  <- run x
     res2 <- run y
+    res3 <- run z -- < infinite loop
 
     print res
     print res2
+    print res3 -- < never happening
 
     pure ()
 

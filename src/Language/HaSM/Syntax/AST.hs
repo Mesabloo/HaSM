@@ -10,6 +10,7 @@ data Instruction where
     Nop   :: Instruction
     Label :: String -> Instruction
     Add   :: Expr Valuable -> Expr Addressable -> Instruction
+    Jmp   :: Expr Addressable -> Instruction
 
 data EType
     = Valuable
@@ -61,3 +62,4 @@ instance Show Instruction where
     show Nop       = show "nop"
     show (Label l) = "\"" <> l <> ":\""
     show (Add v a) = "\"add " <> show v <> ", " <> show a <> "\""
+    show (Jmp a)   = "\"jmp " <> show a <> "\""

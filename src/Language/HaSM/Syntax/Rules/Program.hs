@@ -11,6 +11,7 @@ import Language.HaSM.Syntax.Rules.Instructions.Ret
 import Language.HaSM.Syntax.Rules.Instructions.Nop
 import Language.HaSM.Syntax.Rules.Instructions.Label
 import Language.HaSM.Syntax.Rules.Instructions.Add
+import Language.HaSM.Syntax.Rules.Instructions.Jmp
 
 program :: Parser [Instruction]
 program = init *> body <* eof
@@ -25,4 +26,5 @@ statement = choice
     [ mov <?> "MOV instruction"
     , ret <?> "RET instruction"
     , nop <?> "NOP instruction"
-    , add <?> "ADD instruction" ] <?> ""
+    , add <?> "ADD instruction"
+    , jmp <?> "JMP instruction" ] <?> ""
