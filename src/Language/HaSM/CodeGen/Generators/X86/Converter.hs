@@ -1,39 +1,56 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE LambdaCase, TemplateHaskell #-}
 
 module Language.HaSM.CodeGen.Generators.X86.Converter where
 
-import Language.HaSM.CodeGen.Generators.X86.Core
+import Language.HaSM.CodeGen.Core
 import Language.HaSM.CodeGen.Generators.X86.Generator
+import Language.HaSM.CodeGen.Generators.X86.Encoder (toBytes32)
 import Data.Word (Word8)
 import Control.Monad.State (State, evalState, modify, gets)
 import qualified Data.Map as Map
-import Control.Lens ((^.))
+import Control.Lens ((%=), makeLenses, uses, use, (+=))
+import Foreign.Ptr (Ptr, IntPtr(..), ptrToIntPtr)
+import Control.Conditional ((<<|))
+import Debug.Trace
 
-type Converter = State (Map.Map String Integer)
+type Converter = State ConverterState
 
-convert :: GeneratorState -> [Word8]
-convert = (`evalState` mempty) . register
+data ConverterState
+    = CState
+    { _labels :: Map.Map String Integer
+    , _base   :: Integer
+    , _offset :: Integer }
 
-register :: GeneratorState -> Converter [Word8]
-register c = go (c ^. code) *> converter c
+makeLenses ''ConverterState
 
-go :: [Core] -> Converter ()
-go []             = pure ()
-go (Label n o:cs) = do
-    modify (Map.insert n o)
-    go cs
-go (_:cs)         = go cs
+convert' :: Ptr a -> [Core] -> [Word8]
+convert' p = (`evalState` CState mempty (baseAddress p) 0) . register
+  where baseAddress p = fromIntegral (f (ptrToIntPtr p))
+        f (IntPtr i)  = i
 
-converter :: GeneratorState -> Converter [Word8]
-converter = go' [] . (^. code)
+register :: [Core] -> Converter [Word8]
+register c = go 0 c *> converter c
+
+go :: Integer -> [Core] -> Converter ()
+go _ []             = pure ()
+go n (Label o:cs)   = do
+    labels %= Map.insert o n
+    go n cs
+go n (Id _:cs)      = go (n + 4) cs
+go n (_:cs)         = go (n + 1) cs
+
+converter :: [Core] -> Converter [Word8]
+converter = go' []
 
 go' :: [Word8] -> [Core] -> Converter [Word8]
 go' gen []             = pure gen
-go' gen (Byte b:cs)    = go' (gen <> [b]) cs
-go' gen (Label n o:cs) = go' gen cs
-go' gen (JmpL n:cs)     = do
-    gets (Map.lookup n) >>= \case
-        Nothing -> error ("Label " <> n <> " not found")
-        Just n' -> go' (gen <> jmp n') cs
-  where jmp n = [0xFF] <> []
-go' gen _              = undefined
+go' gen (Byte  b : cs) = do
+    offset += 1
+    go' (gen <> [b]) cs
+go' gen (Label _ : cs) = go' gen cs
+go' gen (Id o:cs)      = do
+    off     <- labels `uses` (fail ("Label " <> o <> " not found") <<| Map.lookup o)
+    offset' <- use offset
+
+    let off' = -offset' + off - 1
+    go' (gen <> toBytes32 off') cs

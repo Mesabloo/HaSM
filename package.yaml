@@ -27,6 +27,7 @@ dependencies:
 - containers
 - bytestring
 - lens
+- cond
 
 when:
 - condition: os(windows)

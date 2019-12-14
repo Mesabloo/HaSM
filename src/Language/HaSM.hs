@@ -1,11 +1,11 @@
 module Language.HaSM
-( hasm_x86
-, run, extern ) where
+( hasm
+, run, extern
+, Arch(..)
+, module Language.HaSM.Syntax ) where
 
 import Language.HaSM.TH (hasm)
 import Language.HaSM.CodeGen.Architecture (Arch(..))
 import Language.Haskell.TH.Quote (QuasiQuoter)
 import Language.HaSM.Runtime (run, extern)
-
-hasm_x86 :: QuasiQuoter
-hasm_x86 = hasm X86
+import Language.HaSM.Syntax
