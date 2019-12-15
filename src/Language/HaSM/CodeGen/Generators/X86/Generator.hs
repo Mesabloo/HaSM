@@ -23,8 +23,6 @@ generator (Jmp (Name n) : is)           =
     [Byte 0xEB, Id n] <> generator is
 generator (Mov (Imm i) (Reg dst) : is)  =
     [Byte (0xB8 + index dst)] <> immediate i <>  generator is
-generator (Mov (Addr a) (Reg dst) : is) =
-    [Byte 0x8B, Byte 0x05] <> immediate (I a) <> generator is
 generator (Mov (Reg src) (Reg dst) : is) =
     [Byte 0x89, Byte $ modRM .|. index src `shiftL` 3 .|. index dst] <> generator is
 generator (Nop : is) =
