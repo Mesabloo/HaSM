@@ -27,6 +27,7 @@ data Immediate
     = I Integer
     | D Double
     | Id String
+  deriving (Eq, Ord)
 
 data Register
     = EAX
@@ -63,3 +64,18 @@ instance Show Instruction where
     show (Label l) = "\"" <> l <> ":\""
     show (Add v a) = "\"add " <> show v <> ", " <> show a <> "\""
     show (Jmp a)   = "\"jmp " <> show a <> "\""
+
+instance Eq Instruction where
+    Mov v1 a1 == Mov v2 a2 = v1 == v2 && a1 == a2
+    Ret       == Ret       = True
+    Nop       == Nop       = True
+    Label l1  == Label l2  = l1 == l2
+    Add v1 a1 == Add v2 a2 = v1 == v2 && a1 == a2
+    Jmp a1    == Jmp a2    = a1 == a2
+
+instance Eq (Expr t) where
+    Imm i1      == Imm i2      = i1 == i2
+    Reg r1      == Reg r2      = r1 == r2
+    Addr a1     == Addr a2     = a1 == a2
+    Name n1     == Name n2     = n1 == n2
+    Shift o1 a1 == Shift o2 a2 = o1 == o2 && a1 == a2
