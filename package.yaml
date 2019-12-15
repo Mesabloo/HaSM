@@ -17,6 +17,11 @@ extra-source-files:
 # common to point users to the README.md file.
 description:         Please see the README on GitHub at <https://github.com/mesabloo/hasm#readme>
 
+library:
+  source-dirs: src
+  ghc-options:
+  - -O2
+
 dependencies:
 - base
 - megaparsec
@@ -44,22 +49,22 @@ when:
     dependencies:
     - unix
 
-library:
-  source-dirs: src
-
 tests:
-  registers:
-    main:        Register.hs
-    source-dirs: test
+  parsing:
+    main:         Main.hs
+    source-dirs:  test/Parsing
     dependencies:
     - hasm
-# tests:
-#   hasm-test:
-#     main:                Spec.hs
-#     source-dirs:         test
-#     ghc-options:
-#     - -threaded
-#     - -rtsopts
-#     - -with-rtsopts=-N
-#     dependencies:
-#     - hasm
+    - hspec
+  runtime:
+    dependencies:
+    - hasm
+    - hspec
+    main:        Main.hs
+    when:
+    - condition: arch(i386)
+      source-dirs: test/Runtime/X86
+    - condition: arch(x86_64)
+      source-dirs: test/Runtime/X86
+    - condition: ! arch(i386) && ! arch(x86_64)
+      source-dirs: test/Runtime/Unsupported
