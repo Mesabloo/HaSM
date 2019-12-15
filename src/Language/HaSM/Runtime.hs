@@ -10,8 +10,6 @@ import Data.Word (Word8, Word32)
 import System.Mmap
 import Foreign.ForeignPtr (withForeignPtr)
 import Foreign.Marshal.Utils (copyBytes)
-import Debug.Trace (traceShow)
-import Numeric (showHex)
 #ifndef mingw32_HOST_OS
 import System.Posix.DynamicLinker
 import Foreign.Ptr (castFunPtrToPtr)
@@ -28,7 +26,7 @@ run a is = do
     mem <- allocateMemory size
 
     let bytes  = convert a mem bs
-        icount = traceDump bytes $ length bytes
+        icount = length bytes
 
     code <- codePtr bytes
     withForeignPtr (vecPtr code) (flip (copyBytes mem) icount)
@@ -47,7 +45,3 @@ extern name = do
     fn <- getProcAddress dl name
     pure (heapPtr fn)
 #endif
-
-traceDump :: [Word8] -> a -> a
-traceDump = traceShow . f
-  where f = fmap (mappend "0x" . (`showHex` ""))
