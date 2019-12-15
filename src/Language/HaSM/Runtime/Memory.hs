@@ -1,6 +1,5 @@
 module Language.HaSM.Runtime.Memory where
 
-import Language.HaSM.Runtime.Pointer
 import System.Mmap
 import Foreign.C.Types
 import Foreign.Ptr

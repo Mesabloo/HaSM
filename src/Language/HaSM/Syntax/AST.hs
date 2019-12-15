@@ -5,23 +5,23 @@ module Language.HaSM.Syntax.AST where
 import Numeric (showHex)
 
 data Instruction where
-    Mov   :: Expr Valuable -> Expr Addressable -> Instruction
+    Mov   :: Expr 'Valuable -> Expr 'Addressable -> Instruction
     Ret   :: Instruction
     Nop   :: Instruction
     Label :: String -> Instruction
-    Add   :: Expr Valuable -> Expr Addressable -> Instruction
-    Jmp   :: Expr Addressable -> Instruction
+    Add   :: Expr 'Valuable -> Expr 'Addressable -> Instruction
+    Jmp   :: Expr 'Addressable -> Instruction
 
 data EType
     = Valuable
     | Addressable
 
 data Expr :: EType -> * where
-    Imm   :: Immediate -> Expr Valuable
+    Imm   :: Immediate -> Expr 'Valuable
     Reg   :: Register -> Expr t
     Addr  :: Integer -> Expr t
     Name  :: String -> Expr t
-    Shift :: Integer -> Expr Addressable -> Expr t
+    Shift :: Integer -> Expr 'Addressable -> Expr t
 
 data Immediate
     = I Integer
@@ -72,6 +72,7 @@ instance Eq Instruction where
     Label l1  == Label l2  = l1 == l2
     Add v1 a1 == Add v2 a2 = v1 == v2 && a1 == a2
     Jmp a1    == Jmp a2    = a1 == a2
+    _         == _         = False
 
 instance Eq (Expr t) where
     Imm i1      == Imm i2      = i1 == i2
@@ -79,3 +80,4 @@ instance Eq (Expr t) where
     Addr a1     == Addr a2     = a1 == a2
     Name n1     == Name n2     = n1 == n2
     Shift o1 a1 == Shift o2 a2 = o1 == o2 && a1 == a2
+    _           == _           = False

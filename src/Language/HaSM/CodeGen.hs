@@ -12,7 +12,7 @@ import Data.Word (Word8)
 
 generate :: Arch -> [Instruction] -> [Core]
 generate X86 is = X86.generate is
-generate a   is = error ("Unsupported platform " <> show a)
+generate a _    = error ("Unsupported platform " <> show a)
 
 convert :: Arch -> Ptr a -> [Core] -> [Word8]
 convert X86 mem cs = X86.convert mem cs

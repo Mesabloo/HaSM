@@ -3,15 +3,13 @@
 module Language.HaSM.CodeGen.Generators.X86.Converter where
 
 import Language.HaSM.CodeGen.Core
-import Language.HaSM.CodeGen.Generators.X86.Generator
 import Language.HaSM.CodeGen.Generators.X86.Encoder (toBytes32)
 import Data.Word (Word8)
-import Control.Monad.State (State, evalState, modify, gets)
+import Control.Monad.State (State, evalState)
 import qualified Data.Map as Map
 import Control.Lens ((%=), makeLenses, uses, use, (+=))
 import Foreign.Ptr (Ptr, IntPtr(..), ptrToIntPtr)
 import Control.Conditional ((<<|))
-import Debug.Trace
 
 type Converter = State ConverterState
 

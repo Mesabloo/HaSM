@@ -4,7 +4,6 @@ import Language.HaSM.Syntax.AST
 import Language.HaSM.Syntax.Parser
 import Text.Megaparsec (many, (<|>), eof, some, choice, (<?>), satisfy, try, option, optional)
 import Text.Megaparsec.Char (newline)
-import Control.Monad (void)
 import Data.Char (isSpace)
 import Language.HaSM.Syntax.Rules.Instructions.Mov
 import Language.HaSM.Syntax.Rules.Instructions.Ret

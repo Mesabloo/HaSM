@@ -4,14 +4,10 @@ module Language.HaSM.TH
 ( hasm ) where
 
 import Language.Haskell.TH.Quote (QuasiQuoter(..))
-import Language.Haskell.TH (Q, Exp(..), runIO, Lit(..), mkName, Name, Type(..))
+import Language.Haskell.TH (Q, Exp(..), Lit(..), mkName, Name, Type(..))
 import Language.HaSM.Syntax (parse, Instruction(..), Expr(..), Immediate(..), Register(..))
 import Text.Megaparsec (ParseErrorBundle, errorBundlePretty)
 import Data.Void (Void)
-import Language.HaSM.CodeGen (Arch, generate)
-import Numeric (showHex)
-import Control.Conditional ((<<|))
-import Data.Functor ((<&>))
 import Control.Lens ((??))
 
 hasm :: QuasiQuoter
@@ -62,6 +58,3 @@ instance ToExp Register where
 
 getName :: String -> Q Name
 getName = pure . mkName
-
-nameNotFoundError :: String -> String
-nameNotFoundError id' = "\"" <> id' <> "\" not found in current scope."

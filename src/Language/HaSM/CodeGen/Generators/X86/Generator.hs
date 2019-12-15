@@ -6,10 +6,8 @@ import Language.HaSM.CodeGen.Core
 import Language.HaSM.Syntax hiding (Label, Id)
 import qualified Language.HaSM.Syntax as Syn (Instruction(Label))
 import Language.HaSM.CodeGen.Generators.X86.Encoder (toBytes32)
-import Control.Monad.State (State, runState)
 import Data.Word (Word8)
-import Data.Bits ((.|.), (.&.), shiftL)
-import Debug.Trace (traceShow)
+import Data.Bits ((.|.), shiftL)
 
 modRM :: Word8
 modRM = 0xC0
@@ -39,7 +37,7 @@ generator (Add (Imm i) (Reg dst) : is) =
     [Byte 0x81, Byte $ modRM .|. index dst] <> immediate i <> generator is
 generator (Add (Reg src) (Reg dst) : is) =
     [Byte 0x01, Byte $ modRM .|. index src `shiftL` 3 .|. index dst] <> generator is
-generator (i : is) = error ("No translation found for " <> show i)
+generator (i : _) = error ("No translation found for " <> show i)
 
 immediate :: Immediate -> [Core]
 immediate (I int) = Byte <$> toBytes32 int

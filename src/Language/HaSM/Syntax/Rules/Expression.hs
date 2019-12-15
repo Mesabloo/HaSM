@@ -8,7 +8,7 @@ import Language.HaSM.Syntax.Parser
 import Language.HaSM.Syntax.AST
 import Language.HaSM.Syntax.Rules.Register
 
-exprVal :: Parser (Expr Valuable)
+exprVal :: Parser (Expr 'Valuable)
 exprVal = try exprAny <|> Imm <$> (symbol "$" *> exprImm)
 
 exprImm :: Parser Immediate

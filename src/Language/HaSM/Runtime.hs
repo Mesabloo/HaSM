@@ -6,8 +6,7 @@ import Language.HaSM.Runtime.Memory (allocateMemory, freeMemory)
 import Language.HaSM.Runtime.Pointer
 import Language.HaSM.CodeGen (Arch, generate, convert)
 import Language.HaSM.Syntax (Instruction)
-import Data.Word (Word8, Word32)
-import System.Mmap
+import Data.Word (Word32)
 import Foreign.ForeignPtr (withForeignPtr)
 import Foreign.Marshal.Utils (copyBytes)
 #ifndef mingw32_HOST_OS
