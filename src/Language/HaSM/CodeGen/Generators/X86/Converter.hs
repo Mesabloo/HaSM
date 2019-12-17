@@ -4,14 +4,16 @@ module Language.HaSM.CodeGen.Generators.X86.Converter where
 
 import Language.HaSM.CodeGen.Core
 import Language.HaSM.CodeGen.Generators.X86.Encoder (toBytes32)
+import Language.HaSM.CodeGen.Generator (Generator)
 import Data.Word (Word8)
-import Control.Monad.State (State, evalState)
+import Control.Monad.State (StateT, evalStateT)
 import qualified Data.Map as Map
 import Control.Lens ((%=), makeLenses, uses, use, (+=))
 import Foreign.Ptr (Ptr, IntPtr(..), ptrToIntPtr)
 import Control.Conditional ((<<|))
+import Control.Monad.Except (Except)
 
-type Converter = State ConverterState
+type Converter a = Generator (StateT ConverterState) a
 
 data ConverterState
     = CState
@@ -21,8 +23,8 @@ data ConverterState
 
 makeLenses ''ConverterState
 
-convert' :: Ptr a -> [Core] -> [Word8]
-convert' p = (`evalState` CState mempty (baseAddress p) 0) . register
+convert' :: Ptr a -> [Core] -> Except String [Word8]
+convert' p cs = register cs `evalStateT` CState mempty (baseAddress p) 0
   where baseAddress p = fromIntegral (f (ptrToIntPtr p))
         f (IntPtr i)  = i
 

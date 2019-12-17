@@ -1,6 +1,7 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, LambdaCase, DeriveAnyClass #-}
 
-module Language.HaSM.Runtime where
+module Language.HaSM.Runtime
+( run, extern, JITException ) where
 
 import Language.HaSM.Runtime.Memory (allocateMemory, freeMemory)
 import Language.HaSM.Runtime.Pointer
@@ -9,6 +10,9 @@ import Language.HaSM.Syntax (Instruction)
 import Data.Word (Word32)
 import Foreign.ForeignPtr (withForeignPtr)
 import Foreign.Marshal.Utils (copyBytes)
+import Control.Monad.State (liftIO)
+import Control.Monad.Except (ExceptT, liftEither, runExceptT)
+import Control.Exception (Exception, throw)
 #ifndef mingw32_HOST_OS
 import System.Posix.DynamicLinker
 import Foreign.Ptr (castFunPtrToPtr)
@@ -16,21 +20,31 @@ import Foreign.Ptr (castFunPtrToPtr)
 import System.Win32.DLL
 #endif
 
+newtype JITException = JITException String
+  deriving (Show, Exception)
+
 run :: Arch -> [Instruction] -> IO Int
-run _ [] = pure 0
-run a is = do
-    let bs   = generate a is
-        size = fromIntegral (length bs)
+run a is =
+    let act = run' a is
+    in runExceptT act >>= \case
+        Left  e -> throw (JITException e)
+        Right r -> r
 
-    mem <- allocateMemory size
+run' :: Arch -> [Instruction] -> ExceptT String IO (IO Int)
+run' _ [] = pure (pure 0)
+run' a is = do
+    bs <- liftEither (generate a is)
+    let size = fromIntegral (length bs)
 
-    let bytes  = convert a mem bs
-        icount = length bytes
+    mem <- liftIO (allocateMemory size)
 
-    code <- codePtr bytes
-    withForeignPtr (vecPtr code) (flip (copyBytes mem) icount)
+    bytes <- liftEither (convert a mem bs)
+    let icount = length bytes
 
-    getFunction mem <* freeMemory mem size
+    code <- liftIO (codePtr bytes)
+    liftIO (withForeignPtr (vecPtr code) (flip (copyBytes mem) icount))
+
+    pure (getFunction mem <* freeMemory mem size)
 
 -- | Returns the address of an external function to be called.
 extern :: String -> IO Word32
