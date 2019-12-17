@@ -18,76 +18,76 @@ tests =
     ]
 
 testMov :: Spec
-testMov = describe "Test on `mov`" $
+testMov = describe "Tests on `mov`:" $
     let a = [hasm| mov $0, %eax |]
         b = [hasm| mov %eax, %ebx |]
         c = [hasm| mov 25, %ecx |]
     in parallel $ do
-        it "should compile all tests" $
+        it "they should all compile" $
             0 `shouldBe` 0 -- dummy test as it won't run if the code doesn't compile
-        it "should have correctly parsed `mov $0, %eax`" $
+        it "`mov $0, %eax` should be correctly parsed" $
             a `shouldBe` [Mov (Imm (I 0)) (Reg EAX)]
-        it "should have correctly parsed `mov %eax, %ebx`" $
+        it "`mov %eax, %ebx` should be correctly parsed" $
             b `shouldBe` [Mov (Reg EAX) (Reg EBX)]
-        it "should have correctly parsed `mov 25, %eax`" $
+        it "`mov 25, %eax` should be correctly parsed" $
             c `shouldBe` [Mov (Addr 25) (Reg ECX)]
 
 testNop :: Spec
-testNop = describe "Test on `nop`" $
+testNop = describe "Tests on `nop`:" $
     let a = [hasm| nop |]
     in parallel $ do
-        it "should compile all tests" $
+        it "they should all compile" $
             0 `shouldBe` 0 -- dummy test as it won't run if the code doesn't compile
-        it "should have correctly parsed `nop`" $
+        it "`nop` should be correctly parsed" $
             a `shouldBe` [Nop]
 
 testLabel :: Spec
-testLabel = describe "Test on labels" $
+testLabel = describe "Tests on labels:" $
     let a = [hasm| loop: nop |]
         b = [hasm| lo.op: nop |]
         c = [hasm| lo.op@2: nop |]
     in parallel $ do
-        it "should compile all tests" $
+        it "they should all compile" $
             0 `shouldBe` 0 -- dummy test as it won't run if the code doesn't compile
-        it "should have correctly parsed `loop: nop`" $
+        it "`loop: nop` should be correctly parsed" $
             a `shouldBe` [Label "loop", Nop]
-        it "should have correctly parsed `lo.op: nop`" $
+        it "`lo.op: nop` should be correctly parsed" $
             b `shouldBe` [Label "lo.op", Nop]
-        it "should have correctly parsed `lo.op@2: nop`" $
+        it "`lo.op@2: nop` should be correctly parsed" $
             c `shouldBe` [Label "lo.op@2", Nop]
 
 testRet :: Spec
-testRet = describe "Test on `ret`" $
+testRet = describe "Tests on `ret`:" $
     let a = [hasm| ret |]
     in parallel $ do
-        it "should compile all tests" $
+        it "they should all compile" $
             0 `shouldBe` 0 -- dummy test as it won't run if the code doesn't compile
-        it "should have correctly parsed `ret`" $
+        it "`ret` should be correctly parsed" $
             a `shouldBe` [Ret]
 
 testJmp :: Spec
-testJmp = describe "Test on `jmp`" $
+testJmp = describe "Tests on `jmp`:" $
     let a = [hasm| jmp loop |]
         b = [hasm| jmp lo.op |]
         c = [hasm| jmp lo._op@2 |]
     in parallel $ do
-        it "should compile all tests" $
+        it "they should all compile" $
             0 `shouldBe` 0 -- dummy test as it won't run if the code doesn't compile
-        it "should have correctly parsed `jmp loop`" $
+        it "`jmp loop` should be correctly parsed" $
             a `shouldBe` [Jmp (Name "loop")]
-        it "should have correctly parsed `jmp lo.op`" $
+        it "`jmp lo.op` should be correctly parsed" $
             b `shouldBe` [Jmp (Name "lo.op")]
-        it "should have correctly parsed `jmp lo._op@2`" $
+        it "`jmp lo._op@2` should be correctly parsed" $
             c `shouldBe` [Jmp (Name "lo._op@2")]
 
 testAdd :: Spec
-testAdd = describe "Test on `add`" $
+testAdd = describe "Tests on `add`:" $
     let a = [hasm| add $0, %eax |]
         b = [hasm| add %eax, %ebx |]
     in parallel $ do
-        it "should compile all tests" $
+        it "they should all compile" $
             0 `shouldBe` 0 -- dummy test as it won't run if the code doesn't compile
-        it "should have correctly parsed `add $0, %eax`" $
+        it "`add $0, %eax` should be correctly parsed" $
             a `shouldBe` [Add (Imm (I 0)) (Reg EAX)]
-        it "should have correctly parsed `add %eax, %ebx`" $
+        it "`add %eax, %ebx` should be correctly parsed" $
             b `shouldBe` [Add (Reg EAX) (Reg EBX)]
