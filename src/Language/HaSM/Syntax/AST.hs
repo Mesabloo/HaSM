@@ -1,8 +1,9 @@
-{-# LANGUAGE DataKinds, GADTs, KindSignatures #-}
+{-# LANGUAGE DataKinds, GADTs, KindSignatures, CPP #-}
 
 module Language.HaSM.Syntax.AST where
 
 import Numeric (showHex)
+import Data.Word (Word32, Word64)
 
 data Instruction where
     Mov   :: Expr 'Valuable -> Expr 'Addressable -> Instruction
@@ -19,7 +20,13 @@ data EType
 data Expr :: EType -> * where
     Imm   :: Immediate -> Expr 'Valuable
     Reg   :: Register -> Expr t
-    Addr  :: Integer -> Expr t
+#if defined(i386_HOST_ARCH)
+    Addr  :: Word32 -> Expr t
+#elif defined(x86_64_HOST_ARCH)
+    Addr  :: Word64 -> Expr t
+#else
+    #error "Unsupported architecture"
+#endif
     Name  :: String -> Expr t
     Shift :: Integer -> Expr 'Addressable -> Expr t
 

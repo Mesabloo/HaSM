@@ -24,5 +24,5 @@ exprAny :: Parser (Expr t)
 exprAny = choice
     [ Reg <$> register
     , try (Shift <$> option 0 integer <*> parens exprAddr) <?> "address offset"
-    , Addr <$> integer
+    , Addr . fromIntegral <$> integer
     , Name <$> identifier <?> "label" ]
