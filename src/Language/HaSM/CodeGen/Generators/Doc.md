@@ -6,8 +6,8 @@ Here is what I understood:
 | Symbol | Example instruction | Example opcodes | Meaning |
 |:------:|---------------------|:---------------:|---------|
 | `/r`   | `mov dst=r32 src=r32` | `89 /r` | `mod r/m byte | (#src << 3) | #dst` |
-|        | `mov dst=r32 src=m32` | `8B /r` | `(#dst << 4) | 0x0D + #src` |
-|        | `mov dst=m32 src=r32` | `89 /r` | `(#src << 4) | 0x0D + #dst` |
+|        | `mov dst=r32 src=m32` | `8B /r` | `(#dst << 4) | 0x04 + #src` |
+|        | `mov dst=m32 src=r32` | `89 /r` | `(#dst << 4) | 0x04 + #src` |
 | `/0`   | `mov dst=r32 src=imm32` | `C7 /0 id` | `0x05 | #dst` |
 |        | `mov dst=m32 src=imm32` | `C7 /0 id` | `0x05 + #dst` |
 | `/1`   | `or dst=r8 src=imm8` | `80 /1 ib` | `0xC8 | #dst` |
