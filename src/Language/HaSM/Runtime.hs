@@ -25,10 +25,8 @@ newtype JITException = JITException String
 
 run :: Arch -> [Instruction] -> IO Int
 run a is =
-    let act = run' a is
-    in runExceptT act >>= \case
-        Left  e -> throw (JITException e)
-        Right r -> r
+    runExceptT (run' a is)
+    >>= either (throw . JITException) id
 
 run' :: Arch -> [Instruction] -> ExceptT String IO (IO Int)
 run' _ [] = pure (pure 0)
@@ -44,7 +42,7 @@ run' a is = do
     code <- liftIO (codePtr bytes)
     liftIO (withForeignPtr (vecPtr code) (flip (copyBytes mem) icount))
 
-    pure (getFunction mem <* freeMemory mem size)
+    pure (liftIO (getFunction mem <* freeMemory mem size))
 
 -- | Returns the address of an external function to be called.
 extern :: String -> IO Word32

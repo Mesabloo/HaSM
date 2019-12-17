@@ -24,7 +24,7 @@ testMov = describe "Tests on `mov`:" $
             0 `shouldBe` 0 -- dummy test as it won't run if the code doesn't compile
         it "the first test should produce `3` on X86" $
             run X86 a `shouldReturn` 3
-        it " the second testshould throw an exception on X86" $
+        it "the second test should throw an exception on X86" $
             run X86 b `shouldThrow` anyException
 
 testJmp :: Spec
