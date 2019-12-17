@@ -5,7 +5,7 @@ It aims at being quite cross-platform.
 
 ### Code example
 
-```haskell
+```hs
 {-# LANGUAGE QuasiQuotes #-}
 
 import Language.HaSM
@@ -15,10 +15,10 @@ main = do
     hello_world <- asciz "Hello, world!"
     printf      <- extern "printf"
 
-    run [hasm_x86|
+    run X86 [hasm|
         push ${hello_world}
         call ${printf}
         xor %eax, %eax
         ret
     |]
-```   
+```
