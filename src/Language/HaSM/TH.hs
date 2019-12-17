@@ -44,7 +44,7 @@ instance ToExp (Expr t) where
     convert (Imm i)     = AppE . ConE <$> getName "Imm"   <*> convert i
     convert (Reg r)     = AppE . ConE <$> getName "Reg"   <*> convert r
     convert (Addr a)    =
-        AppE . ConE <$> getName "Addr"  <*> (AppE . VarE <$> getName "fromIntegral" ?? LitE (IntegerL (fromIntegral a)))
+        AppE . ConE <$> getName "Addr"  ?? (LitE (IntegerL (fromIntegral a)))
     convert (Name n)    = AppE . ConE <$> getName "Name"  ??  LitE (StringL n)
     convert (Shift i e) =
         AppE <$> (AppE . ConE <$> getName "Shift" ?? LitE (IntegerL i)) <*> convert e

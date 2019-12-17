@@ -1,7 +1,7 @@
 {-# LANGUAGE CPP, LambdaCase, DeriveAnyClass #-}
 
 module Language.HaSM.Runtime
-( run, extern, JITException ) where
+( run, extern, JITException(..) ) where
 
 import Language.HaSM.Runtime.Memory (allocateMemory, freeMemory)
 import Language.HaSM.Runtime.Pointer
